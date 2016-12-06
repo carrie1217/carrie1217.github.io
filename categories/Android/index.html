@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>分类 : android | Carrie博客</title>
+    <title>分类 : Android | Carrie博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Carrie">
@@ -14,7 +14,7 @@
     <meta name="description" content="在适当的时候去做事，可节省时间；背道而行往往会徒劳无功。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Carrie博客">
-<meta property="og:url" content="https://carrie1217.github.io/categories/android/index.html">
+<meta property="og:url" content="https://carrie1217.github.io/categories/Android/index.html">
 <meta property="og:site_name" content="Carrie博客">
 <meta property="og:description" content="在适当的时候去做事，可节省时间；背道而行往往会徒劳无功。">
 <meta name="twitter:card" content="summary">
@@ -38,7 +38,7 @@
 <div>
 		
 			<div id="imglogo">
-				<a href="/"><img src="/img/logo1.png" alt="Carrie博客" title="Carrie博客"/></a>
+				<a href="/"><img src="/img/logo.png" alt="Carrie博客" title="Carrie博客"/></a>
 			</div>
 			
 			<div id="textlogo">
@@ -73,7 +73,7 @@
         
 
 <div class="archive-title" >
-  <h2 class="category-icon">android</h2>
+  <h2 class="category-icon">Android</h2>
   
 </div>
 <div id="main" class="archive-part clearfix">
@@ -81,13 +81,65 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
-    <a href="/2016/12/05/基于Travis-CI搭建Android自动打包发布工作流/" title="基于Travis-CI搭建Android自动打包发布工作流" itemprop="url">
+    <a href="/2016/12/05/图标尺寸/" title="图标尺寸" itemprop="url">
   
 
     <time datetime="2016-12-05T10:12:00.000Z" itemprop="datePublished">2016-12-05</time>
 
 
-    <h1 itemprop="name">基于Travis-CI搭建Android自动打包发布工作流</h1>
+    <h1 itemprop="name">图标尺寸</h1>
+
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/12/05/开发规范/" title="开发规范" itemprop="url">
+  
+
+    <time datetime="2016-12-05T10:12:00.000Z" itemprop="datePublished">2016-12-05</time>
+
+
+    <h1 itemprop="name">开发规范</h1>
+
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/12/02/获取屏幕原始高度(工作中遇到的问题)/" title="获取屏幕原始高度" itemprop="url">
+  
+
+    <time datetime="2016-12-02T08:39:19.000Z" itemprop="datePublished">2016-12-02</time>
+
+
+    <h1 itemprop="name">获取屏幕原始高度</h1>
+
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/11/24/TimerTask更新UI线程/" title="TimerTask更新UI" itemprop="url">
+  
+
+    <time datetime="2016-11-24T02:41:59.000Z" itemprop="datePublished">2016-11-24</time>
+
+
+    <h1 itemprop="name">TimerTask更新UI</h1>
+
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/11/22/spannable/" title="Spannable的用法" itemprop="url">
+  
+
+    <time datetime="2016-11-22T03:17:33.000Z" itemprop="datePublished">2016-11-22</time>
+
+
+    <h1 itemprop="name">Spannable的用法</h1>
 
   </a>
 </section>
@@ -210,63 +262,6 @@ $(document).ready(function(){
 $(document).ready(function(){ 
   $('.article-content').each(function(i){
     $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
-
-
-
-<!-- Analytics Begin -->
-
-
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-
-
-<!-- Analytics End -->
-
-<!-- Totop Begin -->
-
-	<div id="totop">
-	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
-	</div>
-	<script src="/js/totop.js"></script>
-
-<!-- Totop End -->
-
-<!-- MathJax Begin -->
-<!-- mathjax config similar to math.stackexchange -->
-
-
-<!-- MathJax End -->
-
-<!-- Tiny_search Begin -->
-
-<!-- Tiny_search End -->
-
-    </body>
-   </html>
-his).find('img').each(function(){
       if ($(this).parent().hasClass('fancybox')) return;
       var alt = this.alt;
       if (alt) $(this).after('<span class="caption">' + alt + '</span>');
