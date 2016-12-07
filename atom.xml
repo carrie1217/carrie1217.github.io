@@ -269,7 +269,7 @@
     <link href="https://carrie1217.github.io/2016/12/05/%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/"/>
     <id>https://carrie1217.github.io/2016/12/05/开发规范/</id>
     <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-06T02:25:04.000Z</updated>
+    <updated>2016-12-07T07:35:37.000Z</updated>
     
     <content type="html"><![CDATA[<p>Android 开发中类、方法、变量、资源等命名规则。</p>
 <a id="more"></a>
@@ -424,8 +424,6 @@
     
       <category term="Android" scheme="https://carrie1217.github.io/categories/Android/"/>
     
-    
-      <category term="rules" scheme="https://carrie1217.github.io/tags/rules/"/>
     
   </entry>
   
@@ -598,7 +596,7 @@
     <link href="https://carrie1217.github.io/2016/12/05/%E5%9F%BA%E4%BA%8ETravis-CI%E6%90%AD%E5%BB%BAAndroid%E8%87%AA%E5%8A%A8%E6%89%93%E5%8C%85%E5%8F%91%E5%B8%83%E5%B7%A5%E4%BD%9C%E6%B5%81/"/>
     <id>https://carrie1217.github.io/2016/12/05/基于Travis-CI搭建Android自动打包发布工作流/</id>
     <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-06T02:17:25.000Z</updated>
+    <updated>2016-12-07T07:35:20.000Z</updated>
     
     <content type="html"><![CDATA[<p>未自动化前安卓开发总是避免不了这样的工作流程：</p>
 <ol>
@@ -694,7 +692,7 @@
     
     </summary>
     
-      <category term="android" scheme="https://carrie1217.github.io/categories/android/"/>
+      <category term="Android" scheme="https://carrie1217.github.io/categories/Android/"/>
     
     
       <category term="Travis-CI" scheme="https://carrie1217.github.io/tags/Travis-CI/"/>
