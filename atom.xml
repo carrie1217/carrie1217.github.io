@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://carrie1217.github.io/"/>
-  <updated>2016-12-06T02:33:40.000Z</updated>
+  <updated>2016-12-06T02:26:12.000Z</updated>
   <id>https://carrie1217.github.io/</id>
   
   <author>
@@ -14,293 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Android机型适配之痛</title>
-    <link href="https://carrie1217.github.io/2016/12/05/Android%E6%9C%BA%E5%9E%8B%E9%80%82%E9%85%8D%E4%B9%8B%E7%97%9B/"/>
-    <id>https://carrie1217.github.io/2016/12/05/Android机型适配之痛/</id>
-    <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-06T02:33:40.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Android项目中Camera的适配。</p>
-<a id="more"></a>
-<h2 id="多姿多彩的Camera"><a href="#多姿多彩的Camera" class="headerlink" title="多姿多彩的Camera"></a>多姿多彩的Camera</h2><ol>
-<li>Intent调用手机内相机程序<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee566e6aeef.jpg" alt=""><br>如果我们设置了照片的存储路径，那么很可能会遇到一下三种问题：</li>
-</ol>
-<p>问题一：onActivityResult方法中的data返回为空（数据表明，93%的机型的data将会是Null，所以如果我们指定了路径，就不要使用data来获取照片，起码在使用前要做空判断）。<br>问题二：照片无法存储。<br>如果自定义存储路径是/mnt/sdcard/lowry/，而手机SD卡下在拍照前没有名为lowry的文件夹，那么部分手机拍照后图片不会保存，导致我们无法获得照片，大多数手机的相机遇到文件夹不存在的情况都会自己创建出不存在的文件夹，而个别手机却不会创建，其代表机型为：三星I8258、华为H30-T00、红米等。</p>
-<p>解决的方法就是在指定存储路径前先判断路径中的文件夹是否都存在，不存在先创建再调用相机。</p>
-<p>问题三：照片可以存储，但是名字不对。<br>file:///mnt/sdcard/123 1.jpg，由于URI的fromFile方法会将路径中的空格用“%20”取代。</p>
-<p>其实对于大多数的手机这都不算事，手机在解析存储路径的时候都会将“%20”替换为空格，这样实际上最终的照片名字还是我们当初指定的名字：123 1.jpg，遗憾的是个别手机（如酷派7260）系统自带的相机没有将“%20”读成空格，拍照后的照片的名字是123%201.jpg，我们用路径“file:///mnt/sdcard/123 1.jpg”能找到照片才怪！<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee567446ec6.jpg" alt=""><br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee56c455fc3.jpg" alt=""><br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee56cc3c251.jpg" alt=""></p>
-<p>总结：</p>
-<p>（1）使用onActivityResult中的intent(data)前要做空判断。<br>（2）指定拍照路径时，先检查路径中的文件夹是否都存在，不存在时先创建文件夹再调用   相机拍照。<br>（3）指定拍照存储路径时，照片的命名中不要包含空格等特殊符号。</p>
-<h2 id="通过Camera的open方法调用手机摄像头"><a href="#通过Camera的open方法调用手机摄像头" class="headerlink" title="通过Camera的open方法调用手机摄像头"></a>通过Camera的open方法调用手机摄像头</h2><p>2.1 连续自动对焦crash</p>
-<p>原因：第一次对焦未结束，应用层又发起的第二次对焦，引起对焦失败。<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee57d42b772_middle.jpg" alt=""><br>解决方案一：传入AutoFocusCallback；<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee585dd32ae.jpg" alt=""><br>解决方案二：延时操作；</p>
-<p>解决方案三：异常捕获。</p>
-<h2 id="UI适配"><a href="#UI适配" class="headerlink" title="UI适配"></a>UI适配</h2><p>有时候布局文件中的某个标签还会引起一些问题，我们先看下面一段布局代码：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b1629003.jpg" alt=""><br>正确结果：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b34bae1a.jpg" alt=""><br>错误结果：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b050cf58.jpg" alt=""><br>这就是因为Android 3.0以下版本在FrameLayout中使用layout_marginTo标签，必须要设置gravity才能生效。</p>
-<p>那么如何解决这个问题呢？在设置android:layout_marginTop的组件中再设置一下 <code>android:layout_gravity=&quot;top&quot;</code>即可。</p>
-<p><a href="http://www.csdn.net/article/2015-09-08/2825645/3" target="_blank" rel="external">原文链接</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Android项目中Camera的适配。&lt;/p&gt;
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>开发规范</title>
-    <link href="https://carrie1217.github.io/2016/12/05/%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/"/>
-    <id>https://carrie1217.github.io/2016/12/05/开发规范/</id>
-    <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-07T07:35:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Android 开发中类、方法、变量、资源等命名规则。</p>
-<a id="more"></a>
-<h1>开发规范</h1>
-
-<ul>
-<li><a href="#1">1.打印调试Log</a></li>
-<li><a href="#2">2.代码缩进，使用四个空格代替一个Tab</a></li>
-<li><a href="#3">3.命名类（classes）</a></li>
-<li><a href="#4">4.命名接口（interface）</a></li>
-<li><a href="#5">5.命名方法（methods）</a></li>
-<li><a href="#6">6.命名变量（variables）</a></li>
-<li><a href="#7">7.命名常量（constants）</a></li>
-<li><a href="#8">8.命名资源文件（drawable folder）</a></li>
-<li><a href="#9">9.命名资源布局文件（XML layout）</a></li>
-<li><a href="#10">10.命名动画文件（anim folder）</a></li>
-<li><a href="#11">11.命名资源ID（resourcesid）</a></li>
-<li><a href="#12">12.命名layout中的id命名</a></li>
-<li><a href="#13">13. 命名styles.xml</a></li>
-<li><a href="#14">14.命名colors.xml</a></li>
-<li><a href="#15">15.约定俗成的英文缩写</a></li>
-<li><a href="#16">16.监听器使用匿名内部类</a></li>
-<li><a href="#17">17.参考链接</a></li>
-</ul>
-<hr>
-<h2 id="1">1. 打印调试Log</h2><br>DEBUG模式下打印调试log时，TAG的值统一使用如下格式<br><br>    public static final String TAG = MyInfoAty.class.getSimpleName();<br>​<br><br>打印log时，格式如下<br><br>    XLog.d(TAG, “上传图片返回=” + strMsg);<br>​<br><br><em>注意<code>d</code>表示打印debug信息，<code>e</code>表示打印error信息，相应地还有<code>v</code>, <code>i</code>, <code>wtf</code>等</em><br><h2 id="2">2. 代码缩进，使用四个空格代替一个Tab</h2><br><h2 id="3">3. 命名类（classes）</h2><br>采用大驼峰命名法，尽量避免缩写，除非该缩写是众所周知的， 比如HTML,URL，如果类名称中包含单词缩写，则单词缩写的每个字母均应大写<br><br>| 类                 | 描述                 | 例如                                      |<br>| —————– | —————— | ————————————— |<br>| activity 类        | Activity为后缀标识      | 欢迎页面类WelcomeActivity                    |<br>| fragment类         | Fragment为后缀标识      | 首页列表类HomeListFragment                   |<br>| Adapter类          | Adapte 为后缀标识       | 新闻详情适配器NewDetailAdapter                 |<br>| 解析类               | Hlr为后缀标识           | 首页解析类HomePosterHlr                      |<br>| 公共方法类             | Tools或Manager为后缀标识 | 线程池管理类：ThreadPoolManager,日志工具类：LogTools |<br>| 数据库类              | 以DBHelper后缀标识      | 新闻数据库：NewDBHelper                       |<br>| Service类          | 以Service为后缀标识      | 时间服务TimeService                         |<br>| BroadcastReceive类 | 以Broadcast为后缀标识    | 时间通知TimeBroadcast                       |<br>| ContentProvider类  | 以Provider为后缀标识     | 日记DiaryProvider                         |<br>| 直接写的共享基础类         | 以Base开头            | BaseActivity,BaseFragment               |<br><br><h2 id="4">4. 命名接口（interface）</h2><br>命名规则与类一样采用大驼峰命名法，多以Listener结尾，例如：interface LogoutDialogClickListener。<br><br><h2 id="5">5. 命名方法（methods）</h2><br>动词或动名词，采用小驼峰命名法例如:<code>onCreate()</code>, <code>run()</code><br><br>| 方法          | 说明                                       |<br>| ———– | —————————————- |<br>| initXX()    | 初始化相关方法,使用init为前缀标识，如初始化布局initView()     |<br>| isXX()      | checkXX()方法返回值为boolean型的请使用is或check为前缀标识 |<br>| getXX()     | 返回某个值的方法，使用get为前缀标识                      |<br>| processXX() | 对数据进行处理的方法，尽量使用process为前缀标识              |<br>| displayXX() | 弹出提示框和提示信息，使用display为前缀标识                |<br>| saveXX()    | 与保存数据相关的，使用sav为e前缀标识                     |<br>| resetXX()   | 对数据重组的，使用reset前缀标识                       |<br>| clearXX()   | 清除数据相关的                                  |<br>| removeXXX() | 清除数据相关的                                  |<br>| drawXXX()   | 绘制数据或效果相关的，使用draw前缀标识                    |<br><br><h2 id="6">6. 命名变量（variables）</h2><br>采用小驼峰命名法。类中控件名称与xml布局id去掉了Activity名称之后的部分保持一致。（组件缩写_view的逻辑名称）<br><br>比如： 组件<code>tv_share_coupon_detailed_txt_part_one</code>对应的变量名<code>tvDetailedTxtPartOne</code>，其中share_coupon是ShareCouponAcitivity中去掉Activity之后的类名。<br><br><h2 id="7">7. 命名常量（constants）</h2><br>全部大写，采用下划线命名法。例如：<code>MIN_WIDTH</code><br>其中常量名开头部分有如下约定<br><em> bundle中传入数值的键值，以<code>EXTRA_</code>开头
-</em> startActivityForResult<br>- 传入的<code>REQUEST_CODE</code>参数，以<code>REQUEST_</code>开头<br>- 返回的结果使用系统默认的常量值即可<br><em> APIKey文件中的常量以<code>KEY_</code>开头
-</em> 网络请求助手类<br>- 请求API的方法中<code>params</code>参数中的键值以<code>PARAM_</code>开头<br>- 返回结果码（一般是整型）常量以<code>RESULT_</code>开头，比如<code>RESULT_ERROR</code><br><em> 刷新的常量以<code>REFRESH_</code>开头以<code>TYPE</code>结尾
-</em> 默认值常量名以<code>DEFAULT_</code>开头<br><br><h2 id="8">8. 命名资源文件（drawable folder）</h2><br>全部小写，采用下划线命名法，加前缀区分。<br>命名模式：activity名称<em>逻辑名称/common</em>逻辑名称<br><em>如果有多种形态(如按钮等)除外,如btn_xx.xml（selector)</em><br><br>| 名称              | 功能                       |<br>| ————— | ———————— |<br>| btn<em>xx          | 按钮图片使用btn</em>整体效果（selector） |<br>| btn_xx<em>normal   | 按钮图片使用btn</em>正常情况效果         |<br>| btn_xx<em>press    | 按钮图片使用btn</em>点击时候效果         |<br>| bg<em>head         | 背景图片使用bg</em>功能_说明           |<br>| def_search<em>cell | 默认图片使用def</em>功能_说明          |<br>| icon_more<em>help  | 图标图片使用icon</em>功能_说明         |<br>| seg_list<em>line   | 具有分隔特征的图片使用seg</em>功能_说明     |<br>| sel<em>ok          | 选择图标使用se</em>功能<em>说明           |<br><br>命名后缀<br><br>| 后缀       | 说明                                  |<br>| ——– | ———————————– |<br>| unit     | 在使用xml的tilemode来配图片时，element图片使用此后缀 |<br>| nor      | 图片的状态，代表普通状态                        |<br>| hl       | 图片的状态，代表高亮状态                        |<br>| press    | 图片的状态，代表按下状态                        |<br>| select   | 图片的状态，代表其所占的view被选中                 |<br>| unselect | 图片的状态，代表其所占的view没有被选中               |<br><br><h2 id="9">9. 命名布局文件（XML layout）</h2><br>全部小写，采用下划线命名法<br><br>1. Contentview命名, Activity默认布局，以去掉后缀的Activity类进行命名。不加后缀：activity</em>功能模块.xml，例如：activity_main.xml、activity_more.xml、activity<em>settings.xml。<br>2. Fragment命名：fragment</em>描述.xml，例如：fragment<em>main.xml。<br>3. Dialog命名：dialog</em>描述.xml，例如：dialog<em>hint.xml。<br>4. PopupWindow命名：ppw</em>描述.xml，例如：ppw_info.xml。<br>5. 列表项命名：list<em>item</em>描述.xml，例如：list_item<em>city.xml。<br>6. 包含项：include</em>模块.xml，例如：include_head.xml、include_bottom.xml。<br><br><h2 id="10">10. 命名动画文件（anim folder）</h2><br>全部小写，采用下划线命名法，加前缀区分<br><br>| 动画命名例子            | 规范写法    |<br>| —————– | ——- |<br>| fade_in           | 淡入      |<br>| fade_out          | 淡出      |<br>| push_down_in      | 从下方推入   |<br>| push_down_out     | 从下方推出   |<br>| push_left         | 推向左方    |<br>| slide_in_from_top | 从头部滑动进入 |<br>| zoom_enter        | 变形进入    |<br>| slide_in          | 滑动进入    |<br>| shrink_to<em>middle  | 中间缩小    |<br><br><h2 id="11">11. 命名资源ID（resourcesid）</h2><br>全部小写，采用下划线命名法<br><br>* strings.xml，dimen.xml等中的id命名<br>- 命名模式：activity名称</em>功能模块名称<em>逻辑名称/activity名称</em>逻辑名称/common<em>逻辑名称 （activity名称是指去掉了Acitivty字眼之后的名称）<br>- 最好可以使用common</em>逻辑名称，因为可以被共用<br>- dimen.xml中，使用activity名称注释，将文件内容区分开来<br>- strings.xml中，使用activity名称注释，将文件内容区分开来<br><br><h2 id="12">12. 命名layout中的id命名</h2><br>命名模式为：组件缩写_模块名称_view的逻辑名称<br><br><del>注意：页面组件名称应该和组件id名保持一致。</del><br>（目前java类中组件使用的是小驼峰命名法）<br><br>组件缩写详情如下<br><br>| 组件                   | 缩写             |<br>| ——————– | ————– |<br>| TextView             | tv             |<br>| ImageView            | iv             |<br>| Button               | btn            |<br>| listView             | lv             |<br>| CheckBox             | chk            |<br>| RadioButton          | rb             |<br>| LineaLayout          | ll             |<br>| RelativeLayout       | rl             |<br>| ImageButton          | imgbtn         |<br>| EditText             | et             |<br>| ExpandableList       | expandablelist |<br>| toggleButton         | togglebtn      |<br>| Spinner              | spinner        |<br>| ProgressBar          | progressbar    |<br>| WdbView              | webview        |<br>| LayoutView           | lv             |<br>| RelativeView         | rv             |<br>| analogClock          | analogclock    |<br>| DigtalClock          | digtalclock    |<br>| DatePicker           | datepicker     |<br>| TimePicker           | timepicker     |<br>| SeekBar              | seekbar        |<br>| AutoCompleteTextView | autocompletetv |<br>| ZoomControls         | zoomctls       |<br>| VideoView            | videoview      |<br>| RantingBar           | rantingbar     |<br>| Tab                  | tab            |<br>| ScrollView           | scrollview     |<br>| MapView              | mapview        |<br><br><h2 id="13">13. 命名styles.xml</h2><br>将layout中不断重现的style提炼出通用的style通用组件，放到styles.xml中<br><br><h2 id="14">14. 命名colors.xml</h2>
-
-<ul>
-<li>将layout中不断重现的color提炼出来，直接以颜色名称命名，从而方便共用和自定义主题样式</li>
-<li>每个layout中特定使用的color值的命名，使用activity名称_颜色名称命名</li>
-</ul>
-<h2 id="15">15. 约定俗成的英文缩写</h2>
-
-<p><strong>程序中使用单词缩写原则：不要用缩写，除非该缩写是约定俗成的。</strong></p>
-<p>下面为常见的英文单词缩写:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>缩写</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>average</td>
-<td>avg</td>
-</tr>
-<tr>
-<td>background</td>
-<td>bg（主要用于布局和子布局的背景）</td>
-</tr>
-<tr>
-<td>buffer</td>
-<td>buf</td>
-</tr>
-<tr>
-<td>control</td>
-<td>ctrl</td>
-</tr>
-<tr>
-<td>delete</td>
-<td>del</td>
-</tr>
-<tr>
-<td>document</td>
-<td>doc</td>
-</tr>
-<tr>
-<td>error</td>
-<td>err</td>
-</tr>
-<tr>
-<td>escape</td>
-<td>esc</td>
-</tr>
-<tr>
-<td>increment</td>
-<td>inc</td>
-</tr>
-<tr>
-<td>infomation</td>
-<td>info</td>
-</tr>
-<tr>
-<td>initial</td>
-<td>init</td>
-</tr>
-<tr>
-<td>image</td>
-<td>img</td>
-</tr>
-<tr>
-<td>Internationalization</td>
-<td>i18n</td>
-</tr>
-<tr>
-<td>length</td>
-<td>len</td>
-</tr>
-<tr>
-<td>library</td>
-<td>lib</td>
-</tr>
-<tr>
-<td>message</td>
-<td>msg</td>
-</tr>
-<tr>
-<td>password-</td>
-<td>pwd</td>
-</tr>
-<tr>
-<td>position</td>
-<td>pos</td>
-</tr>
-<tr>
-<td>server</td>
-<td>srv</td>
-</tr>
-<tr>
-<td>string</td>
-<td>str</td>
-</tr>
-<tr>
-<td>temp</td>
-<td>tmp</td>
-</tr>
-<tr>
-<td>window</td>
-<td>win</td>
-</tr>
-</tbody>
-</table>
-<h2 id="16">16.监听器使用匿名内部类</h2>
-
-<p></p><h2 id="17">17. 参考链接</h2><p></p>
-<ul>
-<li><a href="https://github.com/futurice/android-best-practices" target="_blank" rel="external">android best practices</a></li>
-<li><a href="http://blog.csdn.net/vipzjyno1/article/details/23542617" target="_blank" rel="external">http://blog.csdn.net/vipzjyno1/article/details/23542617</a></li>
-<li><a href="http://www.zhihu.com/question/27227425" target="_blank" rel="external">http://www.zhihu.com/question/27227425</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Android 开发中类、方法、变量、资源等命名规则。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Android" scheme="https://carrie1217.github.io/categories/Android/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>解决git status/commit时中文文件名乱码</title>
-    <link href="https://carrie1217.github.io/2016/12/05/mac_library_show_hide/"/>
-    <id>https://carrie1217.github.io/2016/12/05/mac_library_show_hide/</id>
-    <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-05T10:37:20.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>#不对0x80以上的字符进行quote，解决git status/commit时中文文件名乱码</p>
-<p><code>git config --global core.quotepath false</code></p>
-<p><a href="http://xstarcd.github.io/wiki/shell/git_chinese.html" target="_blank" rel="external">http://xstarcd.github.io/wiki/shell/git_chinese.html</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;#不对0x80以上的字符进行quote，解决git status/commit时中文文件名乱码&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;git config --global core.quotepath false&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://xstar
-    
-    </summary>
-    
-      <category term="git" scheme="https://carrie1217.github.io/categories/git/"/>
-    
-    
-      <category term="git" scheme="https://carrie1217.github.io/tags/git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>处理表情和文字输入的正确姿势</title>
-    <link href="https://carrie1217.github.io/2016/12/05/%E5%A4%84%E7%90%86%E8%A1%A8%E6%83%85%E5%92%8C%E6%96%87%E5%AD%97%E8%BE%93%E5%85%A5%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/"/>
-    <id>https://carrie1217.github.io/2016/12/05/处理表情和文字输入的正确姿势/</id>
-    <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-05T10:42:45.000Z</updated>
-    
-    <content type="html"><![CDATA[<ol>
-<li>点击“输入框”以外的区域，如果当前他们显示的话，需要隐藏表情面板或者软键盘。</li>
-<li>点击“输入框”，如果当前表情面板显示的话，需要先隐藏之，然后弹出软键盘。</li>
-<li>输入框中一般会有显示当前输入状态的提示按钮（有的在输入框左边，有的在右边），比如，如果当前是表情输入状态，该提示按钮的图标应该是软键盘，以提示用户点击该按钮切换到文字输入状态。这个提示按钮的图标和点击后的响应要分情况处理，是动态的。</li>
-<li><p>键盘相关操作方法</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">private InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);</div><div class="line"></div><div class="line">/**</div><div class="line"> * 弹出软键盘</div><div class="line"> */</div><div class="line">private void showKeyboard() &#123;</div><div class="line">    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 隐藏软键盘</div><div class="line"> */</div><div class="line">private void hideKeyboard() &#123;</div><div class="line">    if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) &#123;</div><div class="line">        if (getCurrentFocus() != null)</div><div class="line">            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),   InputMethodManager.HIDE_NOT_ALWAYS);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>表情面板如何在xml中布局</p>
-</li>
-</ol>
-<ul>
-<li>主要有两部分，可见的“输入框”和不可见的表情面板。其实还有一部分，是系统提供的软键盘，不过不需要在布局中做处理。</li>
-<li><p>表情面板中用ViewPager来翻页，用ViewpagerIndicator做分页器</p>
-<p>环信示例：<br>  ​<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout</div><div class="line">    android:id=&quot;@+id/bar_bottom&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;wrap_content&quot;</div><div class="line">    android:layout_alignParentBottom=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    android:paddingBottom=&quot;2dip&quot;</div><div class="line">    android:paddingTop=&quot;2dip&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;0.5dp&quot;</div><div class="line">        android:background=&quot;@color/divider_color&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;LinearLayout</div><div class="line">        android:id=&quot;@+id/rl_bottom&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:gravity=&quot;center_vertical&quot;</div><div class="line">        android:orientation=&quot;horizontal&quot;</div><div class="line">        android:paddingTop=&quot;4dp&quot;&gt;</div><div class="line"></div><div class="line">        &lt;Button</div><div class="line">            android:id=&quot;@+id/chat_sendpic&quot;</div><div class="line">            android:layout_width=&quot;50dp&quot;</div><div class="line">            android:layout_height=&quot;50dp&quot;</div><div class="line">            android:layout_marginLeft=&quot;5dp&quot;</div><div class="line">            android:background=&quot;@drawable/chat_input_img_btn&quot; /&gt;</div><div class="line"></div><div class="line">        &lt;FrameLayout</div><div class="line">            android:layout_width=&quot;0dp&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_weight=&quot;8&quot;</div><div class="line">            android:layout_margin=&quot;5dp&quot; &gt;</div><div class="line"></div><div class="line">            &lt;EditText</div><div class="line">                android:id=&quot;@+id/et_sendmessage&quot;</div><div class="line">                android:layout_width=&quot;wrap_content&quot;</div><div class="line">                android:layout_height=&quot;wrap_content&quot;</div><div class="line">                android:background=&quot;@drawable/chat_input_box&quot;</div><div class="line">                android:hint=&quot;@string/input_chat_msg_hint&quot;</div><div class="line">                android:imeOptions=&quot;actionSend&quot;</div><div class="line">                android:inputType=&quot;text&quot;</div><div class="line">                android:maxLines=&quot;6&quot;</div><div class="line">                android:padding=&quot;5dp&quot; /&gt;</div><div class="line">            &lt;Button</div><div class="line">                android:id=&quot;@+id/btn_chat_emoj_switch&quot;</div><div class="line">                android:layout_width=&quot;30dp&quot;</div><div class="line">                android:layout_height=&quot;30dp&quot;</div><div class="line">                android:layout_marginRight=&quot;10dp&quot;</div><div class="line">                android:layout_gravity=&quot;right|center_vertical&quot;</div><div class="line">                android:background=&quot;@drawable/chat_input_emoji_btn&quot; /&gt;</div><div class="line"></div><div class="line">        &lt;/FrameLayout&gt;</div><div class="line"></div><div class="line">        &lt;RelativeLayout</div><div class="line">            android:layout_width=&quot;wrap_content&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_marginRight=&quot;5dp&quot;&gt;</div><div class="line"></div><div class="line">            &lt;Button</div><div class="line">                android:id=&quot;@+id/btn_chat_send&quot;</div><div class="line">                android:layout_width=&quot;80dp&quot;</div><div class="line">                android:layout_height=&quot;40dp&quot;</div><div class="line">                android:text=&quot;@string/chat_btn_send&quot;</div><div class="line">                android:background=&quot;@drawable/bg_chat_send&quot; /&gt;</div><div class="line">        &lt;/RelativeLayout&gt;</div><div class="line">    &lt;/LinearLayout&gt;</div><div class="line"></div><div class="line">    &lt;LinearLayout</div><div class="line">        android:id=&quot;@+id/ll_face_container&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;150dp&quot;</div><div class="line">        android:orientation=&quot;vertical&quot;</div><div class="line">        android:visibility=&quot;gone&quot;&gt;</div><div class="line"></div><div class="line">        &lt;android.support.v4.view.ViewPager</div><div class="line">            android:id=&quot;@+id/vp_chat_pager&quot;</div><div class="line">            android:layout_width=&quot;match_parent&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">    &lt;/LinearLayout&gt;</div><div class="line">&lt;/LinearLayout&gt;</div><div class="line">​</div></pre></td></tr></table></figure></p>
-</li>
-</ul>
-<ol>
-<li>实现同微信Android客户端那样的输入效果</li>
-</ol>
-<ul>
-<li>点击表情按钮，弹出表情面板，<code>emojPanelShown = true</code>, 表情按钮图标变成键盘图标</li>
-<li>点击键盘按钮，弹出软键盘，<code>emojPanelShown = false</code>, 但是表情面板并没有被隐藏，只是被键盘盖住而已，键盘按钮图标改成表情按钮图标</li>
-<li>点击表情按钮图标，<code>emojPanelShown = true</code>, 隐藏软键盘，表情面板再次出现，表情按钮图标再次变成键盘按钮图标</li>
-<li>点击键盘按钮，同第二步，以此类推。<br>  这里还有两点需要特别注意：<ul>
-<li>点击空白区域，表情面板和软键盘都收起</li>
-<li>点击软键盘上的“收起”按钮，收起软键盘时，获取键盘收起的事件，并且在<code>emojPanelShown = false</code>时才收起表情面板和软键盘。这是为了防止键盘的该收起事件与点击表情按钮时收起键盘的事件冲突。</li>
-</ul>
-</li>
-</ul>
-<ol>
-<li><p>文字输入框随着输入的文字增多，<a href="http://stackoverflow.com/a/3286921/3962551" target="_blank" rel="external">输入框高度自动增加</a>  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;EditText</div><div class="line"> android:id=&quot;@+id/edtInput&quot;</div><div class="line"> android:layout_width=&quot;0dip&quot;</div><div class="line"> android:layout_height=&quot;wrap_content&quot;</div><div class="line"> android:layout_weight=&quot;1&quot;</div><div class="line"> android:hint=&quot;@string/compose_hint&quot;</div><div class="line"> android:inputType=&quot;textCapSentences|textMultiLine&quot;</div><div class="line"> android:maxLength=&quot;2000&quot;</div><div class="line"> android:maxLines=&quot;4&quot; /&gt;</div></pre></td></tr></table></figure>
-</li>
-<li><p>一些未解决的问题</p>
-</li>
-</ol>
-<ul>
-<li>[已解决］表情面板和软键盘来回切换次数超过3次，第4次及以后会，软键盘再次弹出时，会盖住输入栏。一个原因是软键盘高度比表情面板高度高，但是根本原因还没找到。＊已经发现原因＊，是由于点击区域太小，误点击到其它区域导致键盘收起的。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;ol&gt;
-&lt;li&gt;点击“输入框”以外的区域，如果当前他们显示的话，需要隐藏表情面板或者软键盘。&lt;/li&gt;
-&lt;li&gt;点击“输入框”，如果当前表情面板显示的话，需要先隐藏之，然后弹出软键盘。&lt;/li&gt;
-&lt;li&gt;输入框中一般会有显示当前输入状态的提示按钮（有的在输入框左边，有的在右边），比如，如果当前是表情输入状态，该提示按钮的图标应该是软键盘，以提示用户点击该按钮切换到文字输入状态。这个提示按钮的图标和点击后的响应要分情况处理，是动态的。&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;键盘相关操作方法&lt;/p&gt;
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>图标尺寸</title>
@@ -506,6 +219,304 @@
   </entry>
   
   <entry>
+    <title>Android最佳实践</title>
+    <link href="https://carrie1217.github.io/2016/12/05/Android%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/"/>
+    <id>https://carrie1217.github.io/2016/12/05/Android最佳实践/</id>
+    <published>2016-12-05T10:12:00.000Z</published>
+    <updated>2016-12-06T02:27:48.000Z</updated>
+    
+    <content type="html"><![CDATA[<ol>
+<li>定义变量时，UI变量单独放一块，数据变量放一块，空行隔开不要掺杂在一块。</li>
+<li><p>使用UIL时，如果只是简单加载一个图片的bitmap，可以使用SimpleImageLoadingListener方法，而不是ImageLoadingListener。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">imageLoader.displayImage(detailModel.getData().getPicture(), </div><div class="line">                        headerBg, </div><div class="line">                        new SimpleImageLoadingListener() &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) &#123;</div><div class="line">                        headerBg.setImageBitmap(loadedImage);</div><div class="line">                        setBitmap(loadedImage);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                &#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>Activity或Fragment中对adapter.updateDataSet(data);时，<code>notifyDataSetChanged</code>的操作放在adapter的updateDataSet方法内执行。</p>
+<a id="more"></a>
+</li>
+<li><p>外部启动activity时，调用该activity的静态方法，例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static Intent newInstance(Context context, int tabIndexIfNeeded) &#123;</div><div class="line">    Intent intent = new Intent(context, UserGuideActivity.class);</div><div class="line">    intent.putExtra(Constants.KEY_WHICH_TAB, tabIndexIfNeeded);</div><div class="line">    return intent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而外表类实例化该activity的intent的方法是<br><code>final Intent intent = UserGuideActivity.newInstance(this, UserGuideConstants.OPEN_BIZ_AREAS_GUIDE_VIEW);</code></p>
+<p>类似地，启动fragment时，调用该fragment的静态方法，例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static GuiseFragment newInstance(NGGuiseGroup guiseGroup) &#123;</div><div class="line">     GuiseFragment fragment = new GuiseFragment();</div><div class="line">     Bundle bundle = new Bundle();</div><div class="line">     bundle.putSerializable(EXTRA_GUISE_GROUP, guiseGroup);</div><div class="line">     fragment.setArguments(bundle);</div><div class="line">     return fragment;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>而外表类实例化该fragment的方法是<br><code>final GuiseFragment guiseFragment = GuiseFragment.newInstance(guiseGroup);</code></p>
+</li>
+<li><p>发起网络请求之前，务必检测网络状态，只有网络可用时才允许发起网络请求。网络不可用时提示网络连接错误，不允许发起网络请求。<br>例如  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if (!Utils.isNetworkOn()) &#123;</div><div class="line">    showShortToast(R.string.network_down);</div><div class="line">&#125; else</div><div class="line">  net.getArticlePostDetail(APIKey.KEY_ARTICLE_POST_DETAIL, token, String.valueOf(postId), String.valueOf(postType));</div></pre></td></tr></table></figure>
+<p>特殊地，比如视频播放只允许wifi网络下才可以播放，非wifi网络下中断播放。</p>
+</li>
+</ol>
+<h2 id="必读材料"><a href="#必读材料" class="headerlink" title="必读材料"></a>必读材料</h2><ol>
+<li><a href="https://github.com/futurice/android-best-practices/blob/master/translations/Chinese/README.cn.md" target="_blank" rel="external">Android 开发最佳实践</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ol&gt;
+&lt;li&gt;定义变量时，UI变量单独放一块，数据变量放一块，空行隔开不要掺杂在一块。&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用UIL时，如果只是简单加载一个图片的bitmap，可以使用SimpleImageLoadingListener方法，而不是ImageLoadingListener。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;imageLoader.displayImage(detailModel.getData().getPicture(), &lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        headerBg, &lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        new SimpleImageLoadingListener() &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    @Override&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        headerBg.setImageBitmap(loadedImage);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        setBitmap(loadedImage);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                &amp;#125;);&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Activity或Fragment中对adapter.updateDataSet(data);时，&lt;code&gt;notifyDataSetChanged&lt;/code&gt;的操作放在adapter的updateDataSet方法内执行。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>解决git status/commit时中文文件名乱码</title>
+    <link href="https://carrie1217.github.io/2016/12/05/mac_library_show_hide/"/>
+    <id>https://carrie1217.github.io/2016/12/05/mac_library_show_hide/</id>
+    <published>2016-12-05T10:12:00.000Z</published>
+    <updated>2016-12-05T10:37:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>#不对0x80以上的字符进行quote，解决git status/commit时中文文件名乱码</p>
+<p><code>git config --global core.quotepath false</code></p>
+<p><a href="http://xstarcd.github.io/wiki/shell/git_chinese.html" target="_blank" rel="external">http://xstarcd.github.io/wiki/shell/git_chinese.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#不对0x80以上的字符进行quote，解决git status/commit时中文文件名乱码&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git config --global core.quotepath false&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://xstar
+    
+    </summary>
+    
+      <category term="git" scheme="https://carrie1217.github.io/categories/git/"/>
+    
+    
+      <category term="git" scheme="https://carrie1217.github.io/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>开发规范</title>
+    <link href="https://carrie1217.github.io/2016/12/05/%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/"/>
+    <id>https://carrie1217.github.io/2016/12/05/开发规范/</id>
+    <published>2016-12-05T10:12:00.000Z</published>
+    <updated>2016-12-07T07:35:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Android 开发中类、方法、变量、资源等命名规则。</p>
+<a id="more"></a>
+<h1>开发规范</h1>
+
+<ul>
+<li><a href="#1">1.打印调试Log</a></li>
+<li><a href="#2">2.代码缩进，使用四个空格代替一个Tab</a></li>
+<li><a href="#3">3.命名类（classes）</a></li>
+<li><a href="#4">4.命名接口（interface）</a></li>
+<li><a href="#5">5.命名方法（methods）</a></li>
+<li><a href="#6">6.命名变量（variables）</a></li>
+<li><a href="#7">7.命名常量（constants）</a></li>
+<li><a href="#8">8.命名资源文件（drawable folder）</a></li>
+<li><a href="#9">9.命名资源布局文件（XML layout）</a></li>
+<li><a href="#10">10.命名动画文件（anim folder）</a></li>
+<li><a href="#11">11.命名资源ID（resourcesid）</a></li>
+<li><a href="#12">12.命名layout中的id命名</a></li>
+<li><a href="#13">13. 命名styles.xml</a></li>
+<li><a href="#14">14.命名colors.xml</a></li>
+<li><a href="#15">15.约定俗成的英文缩写</a></li>
+<li><a href="#16">16.监听器使用匿名内部类</a></li>
+<li><a href="#17">17.参考链接</a></li>
+</ul>
+<hr>
+<h2 id="1">1. 打印调试Log</h2><br>DEBUG模式下打印调试log时，TAG的值统一使用如下格式<br><br>    public static final String TAG = MyInfoAty.class.getSimpleName();<br>​<br><br>打印log时，格式如下<br><br>    XLog.d(TAG, “上传图片返回=” + strMsg);<br>​<br><br><em>注意<code>d</code>表示打印debug信息，<code>e</code>表示打印error信息，相应地还有<code>v</code>, <code>i</code>, <code>wtf</code>等</em><br><h2 id="2">2. 代码缩进，使用四个空格代替一个Tab</h2><br><h2 id="3">3. 命名类（classes）</h2><br>采用大驼峰命名法，尽量避免缩写，除非该缩写是众所周知的， 比如HTML,URL，如果类名称中包含单词缩写，则单词缩写的每个字母均应大写<br><br>| 类                 | 描述                 | 例如                                      |<br>| —————– | —————— | ————————————— |<br>| activity 类        | Activity为后缀标识      | 欢迎页面类WelcomeActivity                    |<br>| fragment类         | Fragment为后缀标识      | 首页列表类HomeListFragment                   |<br>| Adapter类          | Adapte 为后缀标识       | 新闻详情适配器NewDetailAdapter                 |<br>| 解析类               | Hlr为后缀标识           | 首页解析类HomePosterHlr                      |<br>| 公共方法类             | Tools或Manager为后缀标识 | 线程池管理类：ThreadPoolManager,日志工具类：LogTools |<br>| 数据库类              | 以DBHelper后缀标识      | 新闻数据库：NewDBHelper                       |<br>| Service类          | 以Service为后缀标识      | 时间服务TimeService                         |<br>| BroadcastReceive类 | 以Broadcast为后缀标识    | 时间通知TimeBroadcast                       |<br>| ContentProvider类  | 以Provider为后缀标识     | 日记DiaryProvider                         |<br>| 直接写的共享基础类         | 以Base开头            | BaseActivity,BaseFragment               |<br><br><h2 id="4">4. 命名接口（interface）</h2><br>命名规则与类一样采用大驼峰命名法，多以Listener结尾，例如：interface LogoutDialogClickListener。<br><br><h2 id="5">5. 命名方法（methods）</h2><br>动词或动名词，采用小驼峰命名法例如:<code>onCreate()</code>, <code>run()</code><br><br>| 方法          | 说明                                       |<br>| ———– | —————————————- |<br>| initXX()    | 初始化相关方法,使用init为前缀标识，如初始化布局initView()     |<br>| isXX()      | checkXX()方法返回值为boolean型的请使用is或check为前缀标识 |<br>| getXX()     | 返回某个值的方法，使用get为前缀标识                      |<br>| processXX() | 对数据进行处理的方法，尽量使用process为前缀标识              |<br>| displayXX() | 弹出提示框和提示信息，使用display为前缀标识                |<br>| saveXX()    | 与保存数据相关的，使用sav为e前缀标识                     |<br>| resetXX()   | 对数据重组的，使用reset前缀标识                       |<br>| clearXX()   | 清除数据相关的                                  |<br>| removeXXX() | 清除数据相关的                                  |<br>| drawXXX()   | 绘制数据或效果相关的，使用draw前缀标识                    |<br><br><h2 id="6">6. 命名变量（variables）</h2><br>采用小驼峰命名法。类中控件名称与xml布局id去掉了Activity名称之后的部分保持一致。（组件缩写_view的逻辑名称）<br><br>比如： 组件<code>tv_share_coupon_detailed_txt_part_one</code>对应的变量名<code>tvDetailedTxtPartOne</code>，其中share_coupon是ShareCouponAcitivity中去掉Activity之后的类名。<br><br><h2 id="7">7. 命名常量（constants）</h2><br>全部大写，采用下划线命名法。例如：<code>MIN_WIDTH</code><br>其中常量名开头部分有如下约定<br><em> bundle中传入数值的键值，以<code>EXTRA_</code>开头
+</em> startActivityForResult<br>- 传入的<code>REQUEST_CODE</code>参数，以<code>REQUEST_</code>开头<br>- 返回的结果使用系统默认的常量值即可<br><em> APIKey文件中的常量以<code>KEY_</code>开头
+</em> 网络请求助手类<br>- 请求API的方法中<code>params</code>参数中的键值以<code>PARAM_</code>开头<br>- 返回结果码（一般是整型）常量以<code>RESULT_</code>开头，比如<code>RESULT_ERROR</code><br><em> 刷新的常量以<code>REFRESH_</code>开头以<code>TYPE</code>结尾
+</em> 默认值常量名以<code>DEFAULT_</code>开头<br><br><h2 id="8">8. 命名资源文件（drawable folder）</h2><br>全部小写，采用下划线命名法，加前缀区分。<br>命名模式：activity名称<em>逻辑名称/common</em>逻辑名称<br><em>如果有多种形态(如按钮等)除外,如btn_xx.xml（selector)</em><br><br>| 名称              | 功能                       |<br>| ————— | ———————— |<br>| btn<em>xx          | 按钮图片使用btn</em>整体效果（selector） |<br>| btn_xx<em>normal   | 按钮图片使用btn</em>正常情况效果         |<br>| btn_xx<em>press    | 按钮图片使用btn</em>点击时候效果         |<br>| bg<em>head         | 背景图片使用bg</em>功能_说明           |<br>| def_search<em>cell | 默认图片使用def</em>功能_说明          |<br>| icon_more<em>help  | 图标图片使用icon</em>功能_说明         |<br>| seg_list<em>line   | 具有分隔特征的图片使用seg</em>功能_说明     |<br>| sel<em>ok          | 选择图标使用se</em>功能<em>说明           |<br><br>命名后缀<br><br>| 后缀       | 说明                                  |<br>| ——– | ———————————– |<br>| unit     | 在使用xml的tilemode来配图片时，element图片使用此后缀 |<br>| nor      | 图片的状态，代表普通状态                        |<br>| hl       | 图片的状态，代表高亮状态                        |<br>| press    | 图片的状态，代表按下状态                        |<br>| select   | 图片的状态，代表其所占的view被选中                 |<br>| unselect | 图片的状态，代表其所占的view没有被选中               |<br><br><h2 id="9">9. 命名布局文件（XML layout）</h2><br>全部小写，采用下划线命名法<br><br>1. Contentview命名, Activity默认布局，以去掉后缀的Activity类进行命名。不加后缀：activity</em>功能模块.xml，例如：activity_main.xml、activity_more.xml、activity<em>settings.xml。<br>2. Fragment命名：fragment</em>描述.xml，例如：fragment<em>main.xml。<br>3. Dialog命名：dialog</em>描述.xml，例如：dialog<em>hint.xml。<br>4. PopupWindow命名：ppw</em>描述.xml，例如：ppw_info.xml。<br>5. 列表项命名：list<em>item</em>描述.xml，例如：list_item<em>city.xml。<br>6. 包含项：include</em>模块.xml，例如：include_head.xml、include_bottom.xml。<br><br><h2 id="10">10. 命名动画文件（anim folder）</h2><br>全部小写，采用下划线命名法，加前缀区分<br><br>| 动画命名例子            | 规范写法    |<br>| —————– | ——- |<br>| fade_in           | 淡入      |<br>| fade_out          | 淡出      |<br>| push_down_in      | 从下方推入   |<br>| push_down_out     | 从下方推出   |<br>| push_left         | 推向左方    |<br>| slide_in_from_top | 从头部滑动进入 |<br>| zoom_enter        | 变形进入    |<br>| slide_in          | 滑动进入    |<br>| shrink_to<em>middle  | 中间缩小    |<br><br><h2 id="11">11. 命名资源ID（resourcesid）</h2><br>全部小写，采用下划线命名法<br><br>* strings.xml，dimen.xml等中的id命名<br>- 命名模式：activity名称</em>功能模块名称<em>逻辑名称/activity名称</em>逻辑名称/common<em>逻辑名称 （activity名称是指去掉了Acitivty字眼之后的名称）<br>- 最好可以使用common</em>逻辑名称，因为可以被共用<br>- dimen.xml中，使用activity名称注释，将文件内容区分开来<br>- strings.xml中，使用activity名称注释，将文件内容区分开来<br><br><h2 id="12">12. 命名layout中的id命名</h2><br>命名模式为：组件缩写_模块名称_view的逻辑名称<br><br><del>注意：页面组件名称应该和组件id名保持一致。</del><br>（目前java类中组件使用的是小驼峰命名法）<br><br>组件缩写详情如下<br><br>| 组件                   | 缩写             |<br>| ——————– | ————– |<br>| TextView             | tv             |<br>| ImageView            | iv             |<br>| Button               | btn            |<br>| listView             | lv             |<br>| CheckBox             | chk            |<br>| RadioButton          | rb             |<br>| LineaLayout          | ll             |<br>| RelativeLayout       | rl             |<br>| ImageButton          | imgbtn         |<br>| EditText             | et             |<br>| ExpandableList       | expandablelist |<br>| toggleButton         | togglebtn      |<br>| Spinner              | spinner        |<br>| ProgressBar          | progressbar    |<br>| WdbView              | webview        |<br>| LayoutView           | lv             |<br>| RelativeView         | rv             |<br>| analogClock          | analogclock    |<br>| DigtalClock          | digtalclock    |<br>| DatePicker           | datepicker     |<br>| TimePicker           | timepicker     |<br>| SeekBar              | seekbar        |<br>| AutoCompleteTextView | autocompletetv |<br>| ZoomControls         | zoomctls       |<br>| VideoView            | videoview      |<br>| RantingBar           | rantingbar     |<br>| Tab                  | tab            |<br>| ScrollView           | scrollview     |<br>| MapView              | mapview        |<br><br><h2 id="13">13. 命名styles.xml</h2><br>将layout中不断重现的style提炼出通用的style通用组件，放到styles.xml中<br><br><h2 id="14">14. 命名colors.xml</h2>
+
+<ul>
+<li>将layout中不断重现的color提炼出来，直接以颜色名称命名，从而方便共用和自定义主题样式</li>
+<li>每个layout中特定使用的color值的命名，使用activity名称_颜色名称命名</li>
+</ul>
+<h2 id="15">15. 约定俗成的英文缩写</h2>
+
+<p><strong>程序中使用单词缩写原则：不要用缩写，除非该缩写是约定俗成的。</strong></p>
+<p>下面为常见的英文单词缩写:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>缩写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>average</td>
+<td>avg</td>
+</tr>
+<tr>
+<td>background</td>
+<td>bg（主要用于布局和子布局的背景）</td>
+</tr>
+<tr>
+<td>buffer</td>
+<td>buf</td>
+</tr>
+<tr>
+<td>control</td>
+<td>ctrl</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>del</td>
+</tr>
+<tr>
+<td>document</td>
+<td>doc</td>
+</tr>
+<tr>
+<td>error</td>
+<td>err</td>
+</tr>
+<tr>
+<td>escape</td>
+<td>esc</td>
+</tr>
+<tr>
+<td>increment</td>
+<td>inc</td>
+</tr>
+<tr>
+<td>infomation</td>
+<td>info</td>
+</tr>
+<tr>
+<td>initial</td>
+<td>init</td>
+</tr>
+<tr>
+<td>image</td>
+<td>img</td>
+</tr>
+<tr>
+<td>Internationalization</td>
+<td>i18n</td>
+</tr>
+<tr>
+<td>length</td>
+<td>len</td>
+</tr>
+<tr>
+<td>library</td>
+<td>lib</td>
+</tr>
+<tr>
+<td>message</td>
+<td>msg</td>
+</tr>
+<tr>
+<td>password-</td>
+<td>pwd</td>
+</tr>
+<tr>
+<td>position</td>
+<td>pos</td>
+</tr>
+<tr>
+<td>server</td>
+<td>srv</td>
+</tr>
+<tr>
+<td>string</td>
+<td>str</td>
+</tr>
+<tr>
+<td>temp</td>
+<td>tmp</td>
+</tr>
+<tr>
+<td>window</td>
+<td>win</td>
+</tr>
+</tbody>
+</table>
+<h2 id="16">16.监听器使用匿名内部类</h2>
+
+<p></p><h2 id="17">17. 参考链接</h2><p></p>
+<ul>
+<li><a href="https://github.com/futurice/android-best-practices" target="_blank" rel="external">android best practices</a></li>
+<li><a href="http://blog.csdn.net/vipzjyno1/article/details/23542617" target="_blank" rel="external">http://blog.csdn.net/vipzjyno1/article/details/23542617</a></li>
+<li><a href="http://www.zhihu.com/question/27227425" target="_blank" rel="external">http://www.zhihu.com/question/27227425</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Android 开发中类、方法、变量、资源等命名规则。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Android" scheme="https://carrie1217.github.io/categories/Android/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>处理表情和文字输入的正确姿势</title>
+    <link href="https://carrie1217.github.io/2016/12/05/%E5%A4%84%E7%90%86%E8%A1%A8%E6%83%85%E5%92%8C%E6%96%87%E5%AD%97%E8%BE%93%E5%85%A5%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/"/>
+    <id>https://carrie1217.github.io/2016/12/05/处理表情和文字输入的正确姿势/</id>
+    <published>2016-12-05T10:12:00.000Z</published>
+    <updated>2016-12-05T10:42:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<ol>
+<li>点击“输入框”以外的区域，如果当前他们显示的话，需要隐藏表情面板或者软键盘。</li>
+<li>点击“输入框”，如果当前表情面板显示的话，需要先隐藏之，然后弹出软键盘。</li>
+<li>输入框中一般会有显示当前输入状态的提示按钮（有的在输入框左边，有的在右边），比如，如果当前是表情输入状态，该提示按钮的图标应该是软键盘，以提示用户点击该按钮切换到文字输入状态。这个提示按钮的图标和点击后的响应要分情况处理，是动态的。</li>
+<li><p>键盘相关操作方法</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">private InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);</div><div class="line"></div><div class="line">/**</div><div class="line"> * 弹出软键盘</div><div class="line"> */</div><div class="line">private void showKeyboard() &#123;</div><div class="line">    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 隐藏软键盘</div><div class="line"> */</div><div class="line">private void hideKeyboard() &#123;</div><div class="line">    if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) &#123;</div><div class="line">        if (getCurrentFocus() != null)</div><div class="line">            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),   InputMethodManager.HIDE_NOT_ALWAYS);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>表情面板如何在xml中布局</p>
+</li>
+</ol>
+<ul>
+<li>主要有两部分，可见的“输入框”和不可见的表情面板。其实还有一部分，是系统提供的软键盘，不过不需要在布局中做处理。</li>
+<li><p>表情面板中用ViewPager来翻页，用ViewpagerIndicator做分页器</p>
+<p>环信示例：<br>  ​<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout</div><div class="line">    android:id=&quot;@+id/bar_bottom&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;wrap_content&quot;</div><div class="line">    android:layout_alignParentBottom=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    android:paddingBottom=&quot;2dip&quot;</div><div class="line">    android:paddingTop=&quot;2dip&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;0.5dp&quot;</div><div class="line">        android:background=&quot;@color/divider_color&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;LinearLayout</div><div class="line">        android:id=&quot;@+id/rl_bottom&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:gravity=&quot;center_vertical&quot;</div><div class="line">        android:orientation=&quot;horizontal&quot;</div><div class="line">        android:paddingTop=&quot;4dp&quot;&gt;</div><div class="line"></div><div class="line">        &lt;Button</div><div class="line">            android:id=&quot;@+id/chat_sendpic&quot;</div><div class="line">            android:layout_width=&quot;50dp&quot;</div><div class="line">            android:layout_height=&quot;50dp&quot;</div><div class="line">            android:layout_marginLeft=&quot;5dp&quot;</div><div class="line">            android:background=&quot;@drawable/chat_input_img_btn&quot; /&gt;</div><div class="line"></div><div class="line">        &lt;FrameLayout</div><div class="line">            android:layout_width=&quot;0dp&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_weight=&quot;8&quot;</div><div class="line">            android:layout_margin=&quot;5dp&quot; &gt;</div><div class="line"></div><div class="line">            &lt;EditText</div><div class="line">                android:id=&quot;@+id/et_sendmessage&quot;</div><div class="line">                android:layout_width=&quot;wrap_content&quot;</div><div class="line">                android:layout_height=&quot;wrap_content&quot;</div><div class="line">                android:background=&quot;@drawable/chat_input_box&quot;</div><div class="line">                android:hint=&quot;@string/input_chat_msg_hint&quot;</div><div class="line">                android:imeOptions=&quot;actionSend&quot;</div><div class="line">                android:inputType=&quot;text&quot;</div><div class="line">                android:maxLines=&quot;6&quot;</div><div class="line">                android:padding=&quot;5dp&quot; /&gt;</div><div class="line">            &lt;Button</div><div class="line">                android:id=&quot;@+id/btn_chat_emoj_switch&quot;</div><div class="line">                android:layout_width=&quot;30dp&quot;</div><div class="line">                android:layout_height=&quot;30dp&quot;</div><div class="line">                android:layout_marginRight=&quot;10dp&quot;</div><div class="line">                android:layout_gravity=&quot;right|center_vertical&quot;</div><div class="line">                android:background=&quot;@drawable/chat_input_emoji_btn&quot; /&gt;</div><div class="line"></div><div class="line">        &lt;/FrameLayout&gt;</div><div class="line"></div><div class="line">        &lt;RelativeLayout</div><div class="line">            android:layout_width=&quot;wrap_content&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_marginRight=&quot;5dp&quot;&gt;</div><div class="line"></div><div class="line">            &lt;Button</div><div class="line">                android:id=&quot;@+id/btn_chat_send&quot;</div><div class="line">                android:layout_width=&quot;80dp&quot;</div><div class="line">                android:layout_height=&quot;40dp&quot;</div><div class="line">                android:text=&quot;@string/chat_btn_send&quot;</div><div class="line">                android:background=&quot;@drawable/bg_chat_send&quot; /&gt;</div><div class="line">        &lt;/RelativeLayout&gt;</div><div class="line">    &lt;/LinearLayout&gt;</div><div class="line"></div><div class="line">    &lt;LinearLayout</div><div class="line">        android:id=&quot;@+id/ll_face_container&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;150dp&quot;</div><div class="line">        android:orientation=&quot;vertical&quot;</div><div class="line">        android:visibility=&quot;gone&quot;&gt;</div><div class="line"></div><div class="line">        &lt;android.support.v4.view.ViewPager</div><div class="line">            android:id=&quot;@+id/vp_chat_pager&quot;</div><div class="line">            android:layout_width=&quot;match_parent&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot; /&gt;</div><div class="line">    &lt;/LinearLayout&gt;</div><div class="line">&lt;/LinearLayout&gt;</div><div class="line">​</div></pre></td></tr></table></figure></p>
+</li>
+</ul>
+<ol>
+<li>实现同微信Android客户端那样的输入效果</li>
+</ol>
+<ul>
+<li>点击表情按钮，弹出表情面板，<code>emojPanelShown = true</code>, 表情按钮图标变成键盘图标</li>
+<li>点击键盘按钮，弹出软键盘，<code>emojPanelShown = false</code>, 但是表情面板并没有被隐藏，只是被键盘盖住而已，键盘按钮图标改成表情按钮图标</li>
+<li>点击表情按钮图标，<code>emojPanelShown = true</code>, 隐藏软键盘，表情面板再次出现，表情按钮图标再次变成键盘按钮图标</li>
+<li>点击键盘按钮，同第二步，以此类推。<br>  这里还有两点需要特别注意：<ul>
+<li>点击空白区域，表情面板和软键盘都收起</li>
+<li>点击软键盘上的“收起”按钮，收起软键盘时，获取键盘收起的事件，并且在<code>emojPanelShown = false</code>时才收起表情面板和软键盘。这是为了防止键盘的该收起事件与点击表情按钮时收起键盘的事件冲突。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>文字输入框随着输入的文字增多，<a href="http://stackoverflow.com/a/3286921/3962551" target="_blank" rel="external">输入框高度自动增加</a>  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;EditText</div><div class="line"> android:id=&quot;@+id/edtInput&quot;</div><div class="line"> android:layout_width=&quot;0dip&quot;</div><div class="line"> android:layout_height=&quot;wrap_content&quot;</div><div class="line"> android:layout_weight=&quot;1&quot;</div><div class="line"> android:hint=&quot;@string/compose_hint&quot;</div><div class="line"> android:inputType=&quot;textCapSentences|textMultiLine&quot;</div><div class="line"> android:maxLength=&quot;2000&quot;</div><div class="line"> android:maxLines=&quot;4&quot; /&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>一些未解决的问题</p>
+</li>
+</ol>
+<ul>
+<li>[已解决］表情面板和软键盘来回切换次数超过3次，第4次及以后会，软键盘再次弹出时，会盖住输入栏。一个原因是软键盘高度比表情面板高度高，但是根本原因还没找到。＊已经发现原因＊，是由于点击区域太小，误点击到其它区域导致键盘收起的。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ol&gt;
+&lt;li&gt;点击“输入框”以外的区域，如果当前他们显示的话，需要隐藏表情面板或者软键盘。&lt;/li&gt;
+&lt;li&gt;点击“输入框”，如果当前表情面板显示的话，需要先隐藏之，然后弹出软键盘。&lt;/li&gt;
+&lt;li&gt;输入框中一般会有显示当前输入状态的提示按钮（有的在输入框左边，有的在右边），比如，如果当前是表情输入状态，该提示按钮的图标应该是软键盘，以提示用户点击该按钮切换到文字输入状态。这个提示按钮的图标和点击后的响应要分情况处理，是动态的。&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;键盘相关操作方法&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>基于Travis-CI搭建Android自动打包发布工作流</title>
     <link href="https://carrie1217.github.io/2016/12/05/%E5%9F%BA%E4%BA%8ETravis-CI%E6%90%AD%E5%BB%BAAndroid%E8%87%AA%E5%8A%A8%E6%89%93%E5%8C%85%E5%8F%91%E5%B8%83%E5%B7%A5%E4%BD%9C%E6%B5%81/"/>
     <id>https://carrie1217.github.io/2016/12/05/基于Travis-CI搭建Android自动打包发布工作流/</id>
@@ -614,45 +625,34 @@
   </entry>
   
   <entry>
-    <title>Android最佳实践</title>
-    <link href="https://carrie1217.github.io/2016/12/05/Android%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/"/>
-    <id>https://carrie1217.github.io/2016/12/05/Android最佳实践/</id>
+    <title>Android机型适配之痛</title>
+    <link href="https://carrie1217.github.io/2016/12/05/Android%E6%9C%BA%E5%9E%8B%E9%80%82%E9%85%8D%E4%B9%8B%E7%97%9B/"/>
+    <id>https://carrie1217.github.io/2016/12/05/Android机型适配之痛/</id>
     <published>2016-12-05T10:12:00.000Z</published>
-    <updated>2016-12-06T02:27:48.000Z</updated>
+    <updated>2016-12-06T02:33:40.000Z</updated>
     
-    <content type="html"><![CDATA[<ol>
-<li>定义变量时，UI变量单独放一块，数据变量放一块，空行隔开不要掺杂在一块。</li>
-<li><p>使用UIL时，如果只是简单加载一个图片的bitmap，可以使用SimpleImageLoadingListener方法，而不是ImageLoadingListener。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">imageLoader.displayImage(detailModel.getData().getPicture(), </div><div class="line">                        headerBg, </div><div class="line">                        new SimpleImageLoadingListener() &#123;</div><div class="line"></div><div class="line">                    @Override</div><div class="line">                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) &#123;</div><div class="line">                        headerBg.setImageBitmap(loadedImage);</div><div class="line">                        setBitmap(loadedImage);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                &#125;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>Activity或Fragment中对adapter.updateDataSet(data);时，<code>notifyDataSetChanged</code>的操作放在adapter的updateDataSet方法内执行。</p>
+    <content type="html"><![CDATA[<p>Android项目中Camera的适配。</p>
 <a id="more"></a>
-</li>
-<li><p>外部启动activity时，调用该activity的静态方法，例如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public static Intent newInstance(Context context, int tabIndexIfNeeded) &#123;</div><div class="line">    Intent intent = new Intent(context, UserGuideActivity.class);</div><div class="line">    intent.putExtra(Constants.KEY_WHICH_TAB, tabIndexIfNeeded);</div><div class="line">    return intent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>而外表类实例化该activity的intent的方法是<br><code>final Intent intent = UserGuideActivity.newInstance(this, UserGuideConstants.OPEN_BIZ_AREAS_GUIDE_VIEW);</code></p>
-<p>类似地，启动fragment时，调用该fragment的静态方法，例如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static GuiseFragment newInstance(NGGuiseGroup guiseGroup) &#123;</div><div class="line">     GuiseFragment fragment = new GuiseFragment();</div><div class="line">     Bundle bundle = new Bundle();</div><div class="line">     bundle.putSerializable(EXTRA_GUISE_GROUP, guiseGroup);</div><div class="line">     fragment.setArguments(bundle);</div><div class="line">     return fragment;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>而外表类实例化该fragment的方法是<br><code>final GuiseFragment guiseFragment = GuiseFragment.newInstance(guiseGroup);</code></p>
-</li>
-<li><p>发起网络请求之前，务必检测网络状态，只有网络可用时才允许发起网络请求。网络不可用时提示网络连接错误，不允许发起网络请求。<br>例如  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">if (!Utils.isNetworkOn()) &#123;</div><div class="line">    showShortToast(R.string.network_down);</div><div class="line">&#125; else</div><div class="line">  net.getArticlePostDetail(APIKey.KEY_ARTICLE_POST_DETAIL, token, String.valueOf(postId), String.valueOf(postType));</div></pre></td></tr></table></figure>
-<p>特殊地，比如视频播放只允许wifi网络下才可以播放，非wifi网络下中断播放。</p>
-</li>
+<h2 id="多姿多彩的Camera"><a href="#多姿多彩的Camera" class="headerlink" title="多姿多彩的Camera"></a>多姿多彩的Camera</h2><ol>
+<li>Intent调用手机内相机程序<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee566e6aeef.jpg" alt=""><br>如果我们设置了照片的存储路径，那么很可能会遇到一下三种问题：</li>
 </ol>
-<h2 id="必读材料"><a href="#必读材料" class="headerlink" title="必读材料"></a>必读材料</h2><ol>
-<li><a href="https://github.com/futurice/android-best-practices/blob/master/translations/Chinese/README.cn.md" target="_blank" rel="external">Android 开发最佳实践</a></li>
-</ol>
+<p>问题一：onActivityResult方法中的data返回为空（数据表明，93%的机型的data将会是Null，所以如果我们指定了路径，就不要使用data来获取照片，起码在使用前要做空判断）。<br>问题二：照片无法存储。<br>如果自定义存储路径是/mnt/sdcard/lowry/，而手机SD卡下在拍照前没有名为lowry的文件夹，那么部分手机拍照后图片不会保存，导致我们无法获得照片，大多数手机的相机遇到文件夹不存在的情况都会自己创建出不存在的文件夹，而个别手机却不会创建，其代表机型为：三星I8258、华为H30-T00、红米等。</p>
+<p>解决的方法就是在指定存储路径前先判断路径中的文件夹是否都存在，不存在先创建再调用相机。</p>
+<p>问题三：照片可以存储，但是名字不对。<br>file:///mnt/sdcard/123 1.jpg，由于URI的fromFile方法会将路径中的空格用“%20”取代。</p>
+<p>其实对于大多数的手机这都不算事，手机在解析存储路径的时候都会将“%20”替换为空格，这样实际上最终的照片名字还是我们当初指定的名字：123 1.jpg，遗憾的是个别手机（如酷派7260）系统自带的相机没有将“%20”读成空格，拍照后的照片的名字是123%201.jpg，我们用路径“file:///mnt/sdcard/123 1.jpg”能找到照片才怪！<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee567446ec6.jpg" alt=""><br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee56c455fc3.jpg" alt=""><br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee56cc3c251.jpg" alt=""></p>
+<p>总结：</p>
+<p>（1）使用onActivityResult中的intent(data)前要做空判断。<br>（2）指定拍照路径时，先检查路径中的文件夹是否都存在，不存在时先创建文件夹再调用   相机拍照。<br>（3）指定拍照存储路径时，照片的命名中不要包含空格等特殊符号。</p>
+<h2 id="通过Camera的open方法调用手机摄像头"><a href="#通过Camera的open方法调用手机摄像头" class="headerlink" title="通过Camera的open方法调用手机摄像头"></a>通过Camera的open方法调用手机摄像头</h2><p>2.1 连续自动对焦crash</p>
+<p>原因：第一次对焦未结束，应用层又发起的第二次对焦，引起对焦失败。<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee57d42b772_middle.jpg" alt=""><br>解决方案一：传入AutoFocusCallback；<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee585dd32ae.jpg" alt=""><br>解决方案二：延时操作；</p>
+<p>解决方案三：异常捕获。</p>
+<h2 id="UI适配"><a href="#UI适配" class="headerlink" title="UI适配"></a>UI适配</h2><p>有时候布局文件中的某个标签还会引起一些问题，我们先看下面一段布局代码：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b1629003.jpg" alt=""><br>正确结果：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b34bae1a.jpg" alt=""><br>错误结果：<br><img src="http://img.ptcms.csdn.net/article/201509/08/55ee5b050cf58.jpg" alt=""><br>这就是因为Android 3.0以下版本在FrameLayout中使用layout_marginTo标签，必须要设置gravity才能生效。</p>
+<p>那么如何解决这个问题呢？在设置android:layout_marginTop的组件中再设置一下 <code>android:layout_gravity=&quot;top&quot;</code>即可。</p>
+<p><a href="http://www.csdn.net/article/2015-09-08/2825645/3" target="_blank" rel="external">原文链接</a></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;ol&gt;
-&lt;li&gt;定义变量时，UI变量单独放一块，数据变量放一块，空行隔开不要掺杂在一块。&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;使用UIL时，如果只是简单加载一个图片的bitmap，可以使用SimpleImageLoadingListener方法，而不是ImageLoadingListener。&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;imageLoader.displayImage(detailModel.getData().getPicture(), &lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        headerBg, &lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        new SimpleImageLoadingListener() &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    @Override&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        headerBg.setImageBitmap(loadedImage);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                        setBitmap(loadedImage);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;                &amp;#125;);&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Activity或Fragment中对adapter.updateDataSet(data);时，&lt;code&gt;notifyDataSetChanged&lt;/code&gt;的操作放在adapter的updateDataSet方法内执行。&lt;/p&gt;
+      &lt;p&gt;Android项目中Camera的适配。&lt;/p&gt;
     
     </summary>
     
